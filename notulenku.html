@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notulenku — Penyusun Notulen Rapat Cerdas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#111827;
+  --ink2:#374151;
+  --ink3:#6b7280;
+  --ink4:#9ca3af;
+  --paper:#fafaf8;
+  --paper2:#f3f2ee;
+  --paper3:#eae8e1;
+  --white:#ffffff;
+  --teal:#0f766e;
+  --teal-l:#ccfbf1;
+  --teal-d:#134e4a;
+  --teal-m:#14b8a6;
+  --amber:#92400e;
+  --amber-l:#fef3c7;
+  --amber-m:#f59e0b;
+  --blue:#1e40af;
+  --blue-l:#dbeafe;
+  --blue-m:#3b82f6;
+  --red:#991b1b;
+  --red-l:#fee2e2;
+  --red-m:#ef4444;
+  --border:#e5e2d9;
+  --border2:#d1cec4;
+  --radius:10px;
+  --radius-lg:16px;
+  --shadow-xs:0 1px 2px rgba(0,0,0,.06);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.07);
+  --shadow-md:0 4px 20px rgba(0,0,0,.09);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.12);
+}
+
+body{
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  font-size:13.5px;
+  line-height:1.65;
+}
+
+/* ── HEADER ─────────────────────────────────────── */
+.hdr{
+  background:var(--ink);
+  position:sticky;top:0;z-index:200;
+  border-bottom:3px solid var(--teal-m);
+}
+.hdr-inner{
+  max-width:1440px;margin:0 auto;
+  padding:13px 28px;
+  display:flex;align-items:center;gap:14px;
+}
+.hdr-brand{
+  display:flex;align-items:center;gap:11px;
+  text-decoration:none;
+}
+.hdr-mark{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--teal-m),var(--teal-d));
+  border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.hdr-mark svg{width:18px;height:18px}
+.hdr-name{
+  font-size:17px;font-weight:600;
+  color:#fff;letter-spacing:-0.01em;
+}
+.hdr-name span{color:var(--teal-m)}
+.hdr-tag{
+  font-size:10px;color:#6b7280;
+  font-weight:400;letter-spacing:.04em;
+  text-transform:uppercase;
+  margin-top:1px;display:block;
+}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.hdr-pill{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  color:#9ca3af;font-size:11px;
+  padding:4px 11px;border-radius:20px;
+  display:flex;align-items:center;gap:5px;
+}
+.hdr-pill .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--teal-m);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── LAYOUT ──────────────────────────────────────── */
+.wrap{
+  max-width:1440px;margin:0 auto;
+  padding:24px 28px 56px;
+  display:grid;
+  grid-template-columns:430px 1fr;
+  gap:24px;align-items:start;
+}
+@media(max-width:980px){
+  .wrap{grid-template-columns:1fr;padding:16px 16px 48px}
+}
+
+/* ── FORM PANEL ──────────────────────────────────── */
+.form-panel{
+  position:sticky;top:75px;
+  max-height:calc(100vh - 95px);
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.form-panel::-webkit-scrollbar{width:3px}
+.form-panel::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+@media(max-width:980px){.form-panel{position:static;max-height:none}}
+
+/* ── CARDS ───────────────────────────────────────── */
+.card{
+  background:var(--white);
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+  transition:box-shadow .2s;
+}
+.card+.card{margin-top:14px}
+.card:hover{box-shadow:var(--shadow-md)}
+
+.card-hd{
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  background:var(--paper);
+  display:flex;align-items:center;gap:10px;
+}
+.card-hd-ico{
+  width:30px;height:30px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.card-hd-ico.teal{background:var(--teal-l);color:var(--teal-d)}
+.card-hd-ico.amber{background:var(--amber-l);color:var(--amber)}
+.card-hd-ico.blue{background:var(--blue-l);color:var(--blue)}
+.card-hd-ico svg{width:14px;height:14px}
+.card-hd-t{font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:.01em}
+.card-hd-s{font-size:11px;color:var(--ink3);margin-top:1px}
+.card-body{padding:18px}
+
+/* ── FIELDS ──────────────────────────────────────── */
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.lbl{
+  display:block;font-size:11px;font-weight:600;
+  color:var(--ink3);margin-bottom:5px;
+  letter-spacing:.04em;text-transform:uppercase;
+}
+.lbl .req{color:var(--teal-m);margin-left:2px}
+.hint{font-size:10.5px;color:var(--ink4);margin-top:4px;text-transform:none;letter-spacing:0;font-weight:400}
+input[type=text],input[type=date],textarea{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--border2);
+  border-radius:var(--radius);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;color:var(--ink);
+  background:#fff;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+  line-height:1.55;
+}
+input[type=text]:focus,input[type=date]:focus,textarea:focus{
+  border-color:var(--teal-m);
+  box-shadow:0 0 0 3px rgba(20,184,166,.12);
+}
+input[type=text].err,input[type=date].err,textarea.err{
+  border-color:var(--red-m);
+  box-shadow:0 0 0 3px rgba(239,68,68,.1);
+}
+textarea{resize:vertical;min-height:80px}
+.err-msg{font-size:11px;color:var(--red-m);margin-top:4px;display:none}
+.err-msg.on{display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── AI TEXTAREA WRAPPER ─────────────────────────── */
+.ai-wrap{position:relative}
+.ai-btn{
+  position:absolute;bottom:8px;right:8px;
+  display:flex;align-items:center;gap:6px;
+  background:var(--ink);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:11.5px;font-weight:500;
+  padding:6px 12px;border-radius:7px;
+  border:none;cursor:pointer;
+  transition:all .15s;
+  z-index:2;
+}
+.ai-btn:hover{background:var(--teal-d)}
+.ai-btn:active{transform:scale(.97)}
+.ai-btn svg{width:13px;height:13px}
+.ai-btn.loading{opacity:.7;pointer-events:none}
+.ai-status{
+  font-size:11px;color:var(--teal);margin-top:5px;
+  display:none;align-items:center;gap:5px;
+}
+.ai-status.on{display:flex}
+.ai-spin{
+  width:12px;height:12px;
+  border:2px solid var(--teal-l);
+  border-top-color:var(--teal-m);
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:var(--radius);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12.5px;font-weight:500;
+  cursor:pointer;border:1.5px solid transparent;
+  transition:all .15s;line-height:1;white-space:nowrap;
+}
+.btn svg{width:13px;height:13px;flex-shrink:0}
+.btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-primary:hover{background:var(--ink2)}
+.btn-primary:active{transform:scale(.98)}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-teal:hover{background:var(--teal-d)}
+.btn-outline{background:#fff;color:var(--ink2);border-color:var(--border2)}
+.btn-outline:hover{background:var(--paper);border-color:var(--ink3)}
+.btn-ghost{background:transparent;color:var(--ink3);border-color:transparent;padding:8px 12px}
+.btn-ghost:hover{background:var(--paper2);color:var(--ink)}
+.btn-gen{
+  width:100%;justify-content:center;
+  padding:12px 20px;font-size:13.5px;font-weight:600;
+  background:var(--teal);color:#fff;border-color:var(--teal);
+  border-radius:var(--radius);letter-spacing:.01em;
+}
+.btn-gen:hover{background:var(--teal-d)}
+.btn-gen:active{transform:scale(.99)}
+.btn-reset{
+  width:100%;justify-content:center;
+  padding:9px 16px;margin-top:8px;
+  background:#fff;color:var(--ink3);border-color:var(--border2);
+}
+.btn-reset:hover{background:var(--paper);color:var(--ink)}
+
+/* toolbar buttons */
+.tb-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 13px;border-radius:8px;
+  font-size:12px;font-weight:500;
+  cursor:pointer;border:1px solid var(--border2);
+  background:#fff;color:var(--ink2);
+  transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.tb-btn svg{width:13px;height:13px}
+.tb-btn:hover{background:var(--paper);border-color:var(--ink3)}
+.tb-btn.teal{background:var(--teal-l);border-color:#99f6e4;color:var(--teal-d)}
+.tb-btn.teal:hover{background:#b2fef7}
+
+/* ── PREVIEW PANEL ───────────────────────────────── */
+.prev-panel{min-width:0}
+.prev-empty{
+  background:var(--white);
+  border:2px dashed var(--border2);
+  border-radius:var(--radius-lg);
+  padding:72px 40px;text-align:center;
+}
+.prev-empty-ico{
+  width:60px;height:60px;
+  background:var(--paper2);border-radius:50%;
+  margin:0 auto 18px;
+  display:flex;align-items:center;justify-content:center;
+}
+.prev-empty-ico svg{width:26px;height:26px;color:var(--ink3)}
+.prev-empty h3{font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:7px}
+.prev-empty p{font-size:13px;color:var(--ink3);max-width:280px;margin:0 auto;line-height:1.65}
+
+/* ── DOC WRAPPER ─────────────────────────────────── */
+.doc-wrap{
+  background:var(--white);
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-md);
+  overflow:hidden;
+}
+.doc-toolbar{
+  background:var(--paper);
+  border-bottom:1px solid var(--border);
+  padding:11px 18px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.doc-tb-lbl{
+  font-size:11px;font-weight:600;
+  color:var(--ink3);text-transform:uppercase;
+  letter-spacing:.06em;margin-right:6px;
+}
+.tb-sep{width:1px;height:20px;background:var(--border2);margin:0 4px}
+
+/* ── DOC CONTENT (preview) ───────────────────────── */
+.doc-content{
+  padding:60px 72px;
+  font-family:'Lora',Georgia,serif;
+  line-height:2;color:var(--ink);
+}
+@media(max-width:700px){.doc-content{padding:32px 22px}}
+
+/* ornament top bar */
+.doc-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:32px;
+}
+.doc-topbar-line{flex:1;height:1px;background:var(--border2)}
+.doc-topbar-badge{
+  padding:5px 16px;margin:0 14px;
+  border:1px solid var(--border2);
+  border-radius:20px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:10px;font-weight:600;
+  color:var(--ink3);letter-spacing:.1em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+/* title block */
+.doc-title-block{text-align:center;margin-bottom:38px}
+.doc-kop{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:10px;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:10px;
+}
+.doc-main-title{
+  font-family:'Lora',serif;
+  font-size:23px;font-weight:700;
+  color:var(--ink);letter-spacing:-.01em;
+  line-height:1.35;margin-bottom:14px;
+}
+.doc-meta-row{
+  display:inline-flex;align-items:center;gap:0;
+  background:var(--paper2);
+  border-radius:8px;overflow:hidden;
+  border:1px solid var(--border);
+}
+.doc-meta-cell{
+  padding:7px 16px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:11.5px;color:var(--ink2);
+}
+.doc-meta-cell strong{color:var(--ink);font-weight:600}
+.doc-meta-cell+.doc-meta-cell{border-left:1px solid var(--border)}
+
+/* section */
+.doc-section{margin-bottom:28px}
+.doc-sec-hd{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;
+}
+.doc-sec-num{
+  width:22px;height:22px;
+  background:var(--ink);color:#fff;
+  border-radius:50%;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:10.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.doc-sec-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:10.5px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal);flex:1;
+}
+.doc-sec-line{flex:1;height:1px;background:var(--border)}
+
+.doc-text{font-size:15.5px;line-height:2;color:#1a1a2e}
+.doc-text p{margin-bottom:10px}
+.doc-text p:last-child{margin-bottom:0}
+
+.doc-list{
+  list-style:none;
+  font-size:15.5px;line-height:1.9;
+}
+.doc-list li{
+  padding:4px 0 4px 22px;
+  position:relative;color:#1a1a2e;
+}
+.doc-list li::before{
+  content:'';position:absolute;
+  left:6px;top:14px;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--teal-m);
+}
+.doc-ol{
+  padding-left:22px;
+  font-size:15.5px;line-height:2;
+  color:#1a1a2e;
+}
+.doc-ol li{margin-bottom:4px}
+
+.doc-divider{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:30px 0;
+}
+
+.doc-closing{
+  font-size:15px;font-style:italic;
+  color:var(--ink3);line-height:2;
+  margin-bottom:30px;
+}
+
+/* signatories */
+.doc-sigs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;margin-top:8px;
+}
+.doc-sig{text-align:center}
+.doc-sig-role{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:10.5px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:56px;
+}
+.doc-sig-line{
+  border-top:1.5px solid var(--ink);
+  padding-top:9px;
+  font-size:15px;font-weight:600;
+  color:var(--ink);font-family:'Lora',serif;
+}
+
+/* ── TOAST ───────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--ink);color:#fff;
+  padding:10px 20px;border-radius:24px;
+  font-size:12.5px;font-weight:400;
+  opacity:0;transition:all .22s ease;
+  pointer-events:none;z-index:9999;
+  white-space:nowrap;box-shadow:var(--shadow-lg);
+  display:flex;align-items:center;gap:8px;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast-dot{width:7px;height:7px;border-radius:50%;background:#34d399;flex-shrink:0}
+
+/* ── PRINT ───────────────────────────────────────── */
+@media print{
+  .hdr,.form-panel,.doc-toolbar,.prev-empty,.toast{display:none!important}
+  body{background:#fff}
+  .wrap{display:block;padding:0}
+  .doc-wrap{border:none;box-shadow:none;border-radius:0}
+  .doc-content{padding:20px 36px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <a class="hdr-brand" href="#">
+      <div class="hdr-mark">
+        <svg viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="2" width="12" height="15" rx="2" stroke="white" stroke-width="1.4"/>
+          <line x1="6" y1="6.5" x2="12" y2="6.5" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="6" y1="9.5" x2="12" y2="9.5" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="6" y1="12.5" x2="9.5" y2="12.5" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+          <circle cx="15.5" cy="15.5" r="3" fill="#14b8a6"/>
+          <path d="M14.2 15.5l.9.9 1.7-1.7" stroke="white" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="hdr-name">Notulen<span>ku</span></div>
+        <span class="hdr-tag">Penyusun Notulen Rapat Cerdas</span>
+      </div>
+    </a>
+    <div class="hdr-right">
+      <div class="hdr-pill">
+        <div class="dot"></div>
+        AI Aktif
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="wrap">
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+
+    <!-- Card 1: Info Rapat -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-ico teal">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><line x1="5" y1="5.5" x2="11" y2="5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="5" y1="10.5" x2="8" y2="10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div class="card-hd-t">Informasi Rapat</div>
+          <div class="card-hd-s">Identitas dan waktu pelaksanaan</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label class="lbl" for="fJudul">Judul Rapat <span class="req">*</span></label>
+          <input type="text" id="fJudul" placeholder="Contoh: Rapat Koordinasi Program Semester Genap 2024/2025">
+          <div class="err-msg" id="eJudul">Judul rapat wajib diisi.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="fTanggal">Tanggal Rapat <span class="req">*</span></label>
+          <input type="date" id="fTanggal">
+          <div class="err-msg" id="eTanggal">Tanggal rapat wajib diisi.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="fPeserta">Peserta Rapat <span class="req">*</span></label>
+          <textarea id="fPeserta" rows="5" placeholder="Satu nama per baris, contoh:&#10;Dr. Ahmad Fauzi, M.M. (Kepala Dinas)&#10;Ir. Siti Rahayu, M.T. (Sekretaris)&#10;Budi Santoso, S.E. (Staf Keuangan)"></textarea>
+          <div class="hint">Satu nama per baris. Sertakan jabatan jika ada.</div>
+          <div class="err-msg" id="ePeserta">Peserta rapat wajib diisi.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Catatan AI -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-ico amber">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.24 2 3 4.24 3 7c0 1.77.91 3.33 2.28 4.24L5 13h6l-.28-1.76A5 5 0 0 0 13 7c0-2.76-2.24-5-5-5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="6.5" y1="13" x2="9.5" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="14.5" x2="9.5" y2="14.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div class="card-hd-t">Catatan Rapat</div>
+          <div class="card-hd-s">Input mentah → AI merapikan otomatis</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label class="lbl" for="fCatatan">Catatan Mentah <span class="req">*</span></label>
+          <div class="ai-wrap">
+            <textarea id="fCatatan" rows="9" placeholder="Ketik catatan rapat apa adanya di sini. Tidak perlu rapi. Contoh:&#10;&#10;rapat dibuka jam 9 pagi&#10;pak budi bilang anggaran kurang 20 juta&#10;bu siti minta data dari bidang sebelum jumat&#10;semua setuju pakai template baru dari pusat&#10;ada kendala sistem, IT minta waktu 2 hari&#10;&#10;Klik tombol ✦ Rapikan dengan AI untuk memformat otomatis."></textarea>
+            <button class="ai-btn" id="btnAI" onclick="rapikanAI()">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.2 3.8L12 6l-3.8 1.2L7 11 5.8 7.2 2 6l3.8-1.2L7 1z" fill="currentColor"/></svg>
+              Rapikan dengan AI
+            </button>
+          </div>
+          <div class="ai-status" id="aiStatus">
+            <div class="ai-spin"></div>
+            <span>AI sedang merapikan catatan…</span>
+          </div>
+          <div class="hint">Tulis catatan mentah senatural mungkin. AI akan menyusun menjadi narasi formal.</div>
+          <div class="err-msg" id="eCatatan">Catatan rapat wajib diisi.</div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="fTindak">Tindak Lanjut / Kesimpulan <span class="req">*</span></label>
+          <div class="ai-wrap">
+            <textarea id="fTindak" rows="4" placeholder="Tulis poin tindak lanjut apa adanya. Contoh:&#10;laporan selesai 30 juni&#10;rapat lanjutan jumat depan&#10;semua kepala seksi kumpul data sebelum 28 juni"></textarea>
+            <button class="ai-btn" id="btnAI2" onclick="rapikanAI2()">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.2 3.8L12 6l-3.8 1.2L7 11 5.8 7.2 2 6l3.8-1.2L7 1z" fill="currentColor"/></svg>
+              Rapikan dengan AI
+            </button>
+          </div>
+          <div class="ai-status" id="aiStatus2">
+            <div class="ai-spin"></div>
+            <span>AI sedang merapikan tindak lanjut…</span>
+          </div>
+          <div class="hint">Poin-poin yang disepakati dalam rapat.</div>
+          <div class="err-msg" id="eTindak">Tindak lanjut / kesimpulan wajib diisi.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Pengesahan -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-ico blue">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 13c0-2.8 2.7-5 6-5s6 2.2 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div class="card-hd-t">Pengesahan</div>
+          <div class="card-hd-s">Penyusun dan pereviu notulen</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row2">
+          <div class="field">
+            <label class="lbl" for="fPenyusun">Nama Penyusun <span class="req">*</span></label>
+            <input type="text" id="fPenyusun" placeholder="Nama lengkap penyusun">
+            <div class="err-msg" id="ePenyusun">Nama penyusun wajib diisi.</div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="fPereviu">Nama Pereviu <span class="req">*</span></label>
+            <input type="text" id="fPereviu" placeholder="Nama lengkap pereviu">
+            <div class="err-msg" id="ePereviu">Nama pereviu wajib diisi.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Actions -->
+    <div class="card">
+      <div class="card-body" style="padding:16px 18px">
+        <button class="btn btn-gen" onclick="generateNotulen()">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Generate Notulen
+        </button>
+        <button class="btn btn-reset" onclick="resetForm()">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M2 7a5 5 0 1 1 1.3 3.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 4.5V7h2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Reset ke Data Default
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /form-panel -->
+
+  <!-- PREVIEW PANEL -->
+  <div class="prev-panel" id="prevPanel">
+
+    <div class="prev-empty" id="prevEmpty">
+      <div class="prev-empty-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <h3>Notulen Belum Dibuat</h3>
+      <p>Isi seluruh form di sebelah kiri, lalu klik <strong>Generate Notulen</strong> untuk melihat pratinjau dokumen resmi.</p>
+    </div>
+
+    <div class="doc-wrap" id="docWrap" style="display:none">
+      <div class="doc-toolbar">
+        <span class="doc-tb-lbl">Pratinjau</span>
+        <div style="flex:1"></div>
+        <button class="tb-btn teal" onclick="copyNotulen()">
+          <svg viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 10V2.5A1.5 1.5 0 014 1H10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Salin Teks
+        </button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" onclick="cetakPDF()">
+          <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="8" width="10" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 8V3h4.5L11 5.5V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="4" y1="10.5" x2="8" y2="10.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="4" y1="12" x2="6.5" y2="12" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          PDF
+        </button>
+        <button class="tb-btn" onclick="downloadWord()">
+          <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4 4l1.5 6 1.5-4 1.5 4L10 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Word
+        </button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" onclick="window.print()">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 5.5V2h8v3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><rect x="1" y="5.5" width="12" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 9h8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M3 11h5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          Cetak
+        </button>
+      </div>
+      <div class="doc-content" id="docContent"></div>
+    </div>
+
+  </div><!-- /prev-panel -->
+
+</div><!-- /wrap -->
+
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastTxt">Berhasil disalin.</span>
+</div>
+
+<script>
+/* ── DATA & UTILS ──────────────────────────────────────────── */
+const HARI=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const BULAN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+function fmtTgl(s){
+  const p=s.split('-');
+  const d=new Date(+p[0],+p[1]-1,+p[2]);
+  return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+const DUMMY={
+  judul:'Rapat Koordinasi Penyusunan Laporan Kinerja Instansi Semester I Tahun 2025',
+  tanggal:'2025-06-18',
+  peserta:`Dr. Hj. Nurhayati Kusuma, M.Si. (Kepala Dinas Pemberdayaan Masyarakat)
+Ir. Agus Setiawan, M.T. (Sekretaris Dinas)
+Dra. Retno Wulandari, M.Hum. (Kepala Bidang Perencanaan)
+Bapak Hendra Saputra, S.E. (Kepala Sub Bagian Keuangan)
+Ibu Yuli Ratnasari, S.Sos. (Staf Bidang Pelaporan)
+Bapak Doni Kurniawan, S.Kom. (Staf IT dan Dokumentasi)`,
+  catatan:`rapat dibuka oleh kepala dinas jam 09.15 WIB
+kepala bidang perencanaan lapor bahwa pengisian data indikator baru 62%, ada 3 seksi belum serahkan data
+bagian keuangan sampaikan realisasi anggaran sudah 54% dari pagu, sesuai target semester I
+diskusi soal format baru pelaporan dari Kemenpan-RB yang beda dari tahun lalu, semua setuju pakai template terbaru
+staf IT bilang sistem e-LKIP ada kendala login dari 15 Juni, sudah lapor ke helpdesk pusat, katanya beres 20 Juni
+kepala dinas tegas bilang laporan harus selesai dan diverifikasi paling lambat 30 juni 2025 tanpa terkecuali
+disepakati semua kepala seksi wajib kumpul data pendukung paling lambat jumat 20 juni 2025`,
+  tindak:`1. semua kepala seksi serahkan data indikator ke bidang perencanaan paling lambat 20 juni
+2. staf IT koordinasi dengan helpdesk pusat agar sistem e-LKIP normal sebelum 21 juni
+3. kepala bidang perencanaan kompilasi data dan buat draf laporan akhir paling lambat 25 juni
+4. kepala sub bagian keuangan lengkapi lampiran realisasi anggaran sebelum 23 juni
+5. laporan final diverifikasi dan ditandatangani kepala dinas paling lambat 30 juni 2025`,
+  penyusun:'Yuli Ratnasari, S.Sos.',
+  pereviu:'Ir. Agus Setiawan, M.T.'
+};
+
+function loadDummy(){
+  document.getElementById('fJudul').value=DUMMY.judul;
+  document.getElementById('fTanggal').value=DUMMY.tanggal;
+  document.getElementById('fPeserta').value=DUMMY.peserta;
+  document.getElementById('fCatatan').value=DUMMY.catatan;
+  document.getElementById('fTindak').value=DUMMY.tindak;
+  document.getElementById('fPenyusun').value=DUMMY.penyusun;
+  document.getElementById('fPereviu').value=DUMMY.pereviu;
+}
+
+function clearErr(){
+  document.querySelectorAll('.err-msg').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('input,textarea').forEach(e=>e.classList.remove('err'));
+}
+
+function validate(){
+  const fs=[
+    {id:'fJudul',eid:'eJudul'},
+    {id:'fTanggal',eid:'eTanggal'},
+    {id:'fPeserta',eid:'ePeserta'},
+    {id:'fCatatan',eid:'eCatatan'},
+    {id:'fTindak',eid:'eTindak'},
+    {id:'fPenyusun',eid:'ePenyusun'},
+    {id:'fPereviu',eid:'ePereviu'}
+  ];
+  clearErr();
+  let ok=true;
+  fs.forEach(f=>{
+    const el=document.getElementById(f.id);
+    if(!el.value.trim()){el.classList.add('err');document.getElementById(f.eid).classList.add('on');ok=false;}
+  });
+  return ok;
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastTxt').textContent=msg;
+  t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2800);
+}
+
+function resetForm(){
+  clearErr();
+  document.getElementById('docWrap').style.display='none';
+  document.getElementById('prevEmpty').style.display='block';
+  loadDummy();
+}
+
+/* ── AI RAPIKAN ─────────────────────────────────────────────── */
+async function callAI(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const data=await res.json();
+  if(data.content&&data.content[0]&&data.content[0].text) return data.content[0].text.trim();
+  throw new Error('AI tidak merespons');
+}
+
+async function rapikanAI(){
+  const catatan=document.getElementById('fCatatan').value.trim();
+  if(!catatan){document.getElementById('fCatatan').classList.add('err');document.getElementById('eCatatan').classList.add('on');return;}
+  const btn=document.getElementById('btnAI');
+  const status=document.getElementById('aiStatus');
+  btn.classList.add('loading');btn.textContent='Memproses…';
+  status.classList.add('on');
+  try{
+    const judul=document.getElementById('fJudul').value.trim()||'rapat';
+    const hasil=await callAI(
+      `Kamu adalah notulis profesional instansi pemerintah Indonesia. Tugas kamu adalah merapikan catatan rapat mentah berikut menjadi narasi formal dalam bahasa Indonesia yang rapi, singkat, dan runtut.
+
+Aturan:
+- Gunakan bahasa Indonesia formal dan gaya notulen instansi
+- Susun menjadi beberapa paragraf yang mengalir, bukan poin-poin bullet
+- Jangan tambah informasi baru di luar catatan
+- Jangan hilangkan poin penting
+- Mulai langsung dengan narasi, tanpa judul atau label apapun
+- Setiap paragraf 2-4 kalimat
+- Kalimat pertama menyebutkan pembukaan rapat
+
+Konteks rapat: ${judul}
+
+Catatan mentah:
+${catatan}`
+    );
+    document.getElementById('fCatatan').value=hasil;
+    showToast('Catatan berhasil dirapikan oleh AI.');
+  }catch(e){
+    showToast('Gagal menghubungi AI. Periksa koneksi internet.');
+  }finally{
+    btn.classList.remove('loading');
+    btn.innerHTML='<svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.2 3.8L12 6l-3.8 1.2L7 11 5.8 7.2 2 6l3.8-1.2L7 1z" fill="currentColor"/></svg> Rapikan dengan AI';
+    status.classList.remove('on');
+  }
+}
+
+async function rapikanAI2(){
+  const tindak=document.getElementById('fTindak').value.trim();
+  if(!tindak){document.getElementById('fTindak').classList.add('err');document.getElementById('eTindak').classList.add('on');return;}
+  const btn=document.getElementById('btnAI2');
+  const status=document.getElementById('aiStatus2');
+  btn.classList.add('loading');btn.textContent='Memproses…';
+  status.classList.add('on');
+  try{
+    const hasil=await callAI(
+      `Kamu adalah notulis profesional instansi pemerintah Indonesia. Tugas kamu adalah merapikan catatan tindak lanjut/kesimpulan rapat berikut menjadi daftar bernomor yang formal, jelas, dan runtut dalam bahasa Indonesia.
+
+Aturan:
+- Setiap poin dimulai dengan nomor (1., 2., dst.)
+- Setiap poin adalah satu kalimat yang jelas dan actionable
+- Gunakan bahasa Indonesia formal
+- Jangan tambah informasi baru
+- Sertakan tenggat waktu jika disebutkan
+- Kembalikan HANYA daftar bernomor, tanpa label atau judul apapun
+
+Catatan tindak lanjut mentah:
+${tindak}`
+    );
+    document.getElementById('fTindak').value=hasil;
+    showToast('Tindak lanjut berhasil dirapikan oleh AI.');
+  }catch(e){
+    showToast('Gagal menghubungi AI. Periksa koneksi internet.');
+  }finally{
+    btn.classList.remove('loading');
+    btn.innerHTML='<svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.2 3.8L12 6l-3.8 1.2L7 11 5.8 7.2 2 6l3.8-1.2L7 1z" fill="currentColor"/></svg> Rapikan dengan AI';
+    status.classList.remove('on');
+  }
+}
+
+/* ── GENERATE ────────────────────────────────────────────────── */
+function kapital(s){if(!s)return s;return s.charAt(0).toUpperCase()+s.slice(1);}
+function titik(s){if(!s)return s;s=s.trim();if(!/[.?!]$/.test(s))s+='.';return s;}
+
+function prosesNarasi(txt){
+  const brs=txt.split('\n').map(b=>b.trim()).filter(b=>b.length>0);
+  if(!brs.length)return '';
+  const groups=[];let cur=[];
+  brs.forEach((b,i)=>{cur.push(b);if(cur.length>=3||i===brs.length-1){groups.push(cur);cur=[];}});
+  return groups.map(g=>'<p>'+g.map(b=>titik(kapital(b))).join(' ')+'</p>').join('\n');
+}
+
+function prosesTindak(txt){
+  const brs=txt.split('\n').map(b=>b.trim().replace(/^[\d.)\-•\s]+/,'')).filter(b=>b.length>0);
+  return brs.map(b=>'<li>'+titik(kapital(b))+'</li>').join('\n');
+}
+
+function generateNotulen(){
+  if(!validate()){
+    const first=document.querySelector('.err');
+    if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const judul=document.getElementById('fJudul').value.trim();
+  const tglRaw=document.getElementById('fTanggal').value.trim();
+  const peserta=document.getElementById('fPeserta').value.trim();
+  const catatan=document.getElementById('fCatatan').value.trim();
+  const tindak=document.getElementById('fTindak').value.trim();
+  const penyusun=document.getElementById('fPenyusun').value.trim();
+  const pereviu=document.getElementById('fPereviu').value.trim();
+
+  const tgl=fmtTgl(tglRaw);
+  const pList=peserta.split('\n').map(p=>p.trim()).filter(p=>p.length>0);
+  const narasiCat=prosesNarasi(catatan);
+  const tindakItems=prosesTindak(tindak);
+
+  const pesertaHTML=pList.length===1
+    ?`<div class="doc-text"><p>${pList[0]}</p></div>`
+    :`<ul class="doc-list">${pList.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+
+  const html=`
+<div class="doc-topbar">
+  <div class="doc-topbar-line"></div>
+  <div class="doc-topbar-badge">Notulen Rapat Resmi</div>
+  <div class="doc-topbar-line"></div>
+</div>
+
+<div class="doc-title-block">
+  <div class="doc-kop">Dokumentasi Resmi Rapat</div>
+  <div class="doc-main-title">${judul}</div>
+  <div class="doc-meta-row">
+    <div class="doc-meta-cell"><strong>Hari, Tanggal:</strong> ${tgl}</div>
+    <div class="doc-meta-cell"><strong>Jumlah Peserta:</strong> ${pList.length} orang</div>
+  </div>
+</div>
+
+<hr class="doc-divider">
+
+<div class="doc-section">
+  <div class="doc-sec-hd">
+    <div class="doc-sec-num">I</div>
+    <div class="doc-sec-title">Peserta Rapat</div>
+    <div class="doc-sec-line"></div>
+  </div>
+  ${pesertaHTML}
+</div>
+
+<div class="doc-section">
+  <div class="doc-sec-hd">
+    <div class="doc-sec-num">II</div>
+    <div class="doc-sec-title">Uraian Hasil Rapat</div>
+    <div class="doc-sec-line"></div>
+  </div>
+  <div class="doc-text">
+    <p>Rapat dilaksanakan pada ${tgl} dengan agenda ${judul.toLowerCase()}. Rapat dihadiri oleh ${pList.length} peserta sebagaimana tercantum di atas.</p>
+    ${narasiCat}
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-sec-hd">
+    <div class="doc-sec-num">III</div>
+    <div class="doc-sec-title">Tindak Lanjut dan Kesimpulan</div>
+    <div class="doc-sec-line"></div>
+  </div>
+  <div class="doc-text">
+    <p>Berdasarkan hasil pembahasan, disepakati tindak lanjut dan kesimpulan sebagai berikut:</p>
+  </div>
+  <ol class="doc-ol">${tindakItems}</ol>
+</div>
+
+<div class="doc-section">
+  <div class="doc-sec-hd">
+    <div class="doc-sec-num">IV</div>
+    <div class="doc-sec-title">Penutup</div>
+    <div class="doc-sec-line"></div>
+  </div>
+  <div class="doc-closing">
+    Demikian notulen rapat ini disusun sebagai catatan resmi dan bahan tindak lanjut bagi seluruh pihak yang terlibat. Semua peserta rapat diharapkan melaksanakan tindak lanjut sesuai dengan tanggung jawab dan tenggat waktu yang telah disepakati bersama.
+  </div>
+</div>
+
+<hr class="doc-divider">
+
+<div class="doc-sigs">
+  <div class="doc-sig">
+    <div class="doc-sig-role">Penyusun Notulen</div>
+    <div class="doc-sig-line">${penyusun}</div>
+  </div>
+  <div class="doc-sig">
+    <div class="doc-sig-role">Pereviu</div>
+    <div class="doc-sig-line">${pereviu}</div>
+  </div>
+</div>`;
+
+  document.getElementById('docContent').innerHTML=html;
+  document.getElementById('prevEmpty').style.display='none';
+  document.getElementById('docWrap').style.display='block';
+  setTimeout(()=>document.getElementById('docWrap').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+/* ── COPY ─────────────────────────────────────────────────────── */
+function copyNotulen(){
+  const judul=document.getElementById('fJudul').value.trim();
+  const tglRaw=document.getElementById('fTanggal').value.trim();
+  const tgl=fmtTgl(tglRaw);
+  const peserta=document.getElementById('fPeserta').value.trim().split('\n').map(p=>p.trim()).filter(p=>p.length>0);
+  const catatan=document.getElementById('fCatatan').value.trim();
+  const tindak=document.getElementById('fTindak').value.trim();
+  const penyusun=document.getElementById('fPenyusun').value.trim();
+  const pereviu=document.getElementById('fPereviu').value.trim();
+
+  const brsNarasi=catatan.split('\n').map(b=>b.trim()).filter(b=>b.length>0).map(b=>titik(kapital(b))).join(' ');
+  const brsTindak=tindak.split('\n').map(b=>b.trim().replace(/^[\d.)\-•\s]+/,'')).filter(b=>b.length>0);
+  const tindakStr=brsTindak.map((b,i)=>`  ${i+1}. ${titik(kapital(b))}`).join('\n');
+  const pesertaStr=peserta.map((p,i)=>`  ${i+1}. ${p}`).join('\n');
+
+  const plain=`NOTULEN RAPAT
+═══════════════════════════════════════
+
+Perihal   : ${judul}
+Tanggal   : ${tgl}
+
+─────────────────────────────────────
+I. PESERTA RAPAT
+─────────────────────────────────────
+${pesertaStr}
+
+─────────────────────────────────────
+II. URAIAN HASIL RAPAT
+─────────────────────────────────────
+Rapat dilaksanakan pada ${tgl} dengan agenda ${judul.toLowerCase()}. Rapat dihadiri oleh ${peserta.length} peserta sebagaimana tercantum di atas.
+
+${brsNarasi}
+
+─────────────────────────────────────
+III. TINDAK LANJUT DAN KESIMPULAN
+─────────────────────────────────────
+Berdasarkan hasil pembahasan, disepakati tindak lanjut dan kesimpulan sebagai berikut:
+${tindakStr}
+
+─────────────────────────────────────
+IV. PENUTUP
+─────────────────────────────────────
+Demikian notulen rapat ini disusun sebagai catatan resmi dan bahan tindak lanjut bagi seluruh pihak yang terlibat. Semua peserta rapat diharapkan melaksanakan tindak lanjut sesuai dengan tanggung jawab dan tenggat waktu yang telah disepakati bersama.
+
+═══════════════════════════════════════
+Penyusun Notulen : ${penyusun}
+Pereviu          : ${pereviu}`;
+
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(plain).then(()=>showToast('Notulen berhasil disalin ke clipboard.')).catch(()=>fallbackCopy(plain));
+  }else{fallbackCopy(plain);}
+}
+
+function fallbackCopy(txt){
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.position='fixed';ta.style.top='-9999px';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');showToast('Notulen berhasil disalin.');}
+  catch(e){showToast('Gagal menyalin. Coba manual.');}
+  document.body.removeChild(ta);
+}
+
+/* ── CETAK PDF ─────────────────────────────────────────────────── */
+function cetakPDF(){window.print();}
+
+/* ── DOWNLOAD WORD ─────────────────────────────────────────────── */
+function downloadWord(){
+  const judul=document.getElementById('fJudul').value.trim();
+  const tglRaw=document.getElementById('fTanggal').value.trim();
+  const tgl=fmtTgl(tglRaw);
+  const peserta=document.getElementById('fPeserta').value.trim().split('\n').map(p=>p.trim()).filter(p=>p.length>0);
+  const catatan=document.getElementById('fCatatan').value.trim();
+  const tindak=document.getElementById('fTindak').value.trim();
+  const penyusun=document.getElementById('fPenyusun').value.trim();
+  const pereviu=document.getElementById('fPereviu').value.trim();
+
+  const brsNarasi=catatan.split('\n').map(b=>b.trim()).filter(b=>b.length>0).map(b=>titik(kapital(b))).join(' ');
+  const brsTindak=tindak.split('\n').map(b=>b.trim().replace(/^[\d.)\-•\s]+/,'')).filter(b=>b.length>0).map(b=>titik(kapital(b)));
+  const pesertaItems=peserta.map(p=>`<w:p><w:pPr><w:pStyle w:val="ListParagraph"/><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr></w:pPr><w:r><w:t>${esc(p)}</w:t></w:r></w:p>`).join('');
+  const tindakItems=brsTindak.map(b=>`<w:p><w:pPr><w:pStyle w:val="ListParagraph"/><w:numPr><w:ilvl w:val="0"/><w:numId w:val="2"/></w:numPr></w:pPr><w:r><w:t>${esc(b)}</w:t></w:r></w:p>`).join('');
+
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function para(txt,style,bold,sz,align,space){
+    const pStyle=style?`<w:pStyle w:val="${style}"/>`:'';
+    const jc=align?`<w:jc w:val="${align}"/>`:'';
+    const spEl=space?`<w:spacing w:before="${space.before||0}" w:after="${space.after||0}"/>`:'';
+    const rPr=bold||sz?`<w:rPr>${bold?'<w:b/>':''}${sz?`<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/>`:''}</w:rPr>`:'';
+    return `<w:p><w:pPr>${pStyle}${jc}${spEl}</w:pPr><w:r>${rPr}<w:t xml:space="preserve">${esc(txt)}</w:t></w:r></w:p>`;
+  }
+  function hline(){
+    return `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="CCCCCC"/></w:pBdr><w:spacing w:before="120" w:after="120"/></w:pPr></w:p>`;
+  }
+  function secHead(roman,title){
+    return `<w:p><w:pPr><w:spacing w:before="240" w:after="100"/></w:pPr><w:r><w:rPr><w:b/><w:color w:val="0F766E"/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr><w:t>${roman}. ${title.toUpperCase()}</w:t></w:r></w:p>`;
+  }
+
+  const xml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
+  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+  xmlns:w10="urn:schemas-microsoft-com:office:word"
+  xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
+  xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"
+  xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk"
+  xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml"
+  xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14">
+<w:body>
+<w:sectPr>
+  <w:pgSz w:w="11906" w:h="16838"/>
+  <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0"/>
+</w:sectPr>
+${para('NOTULEN RAPAT','',true,28,'center',{before:0,after:200})}
+${para(esc(judul),'',true,24,'center',{before:0,after:320})}
+${para('Hari, Tanggal: '+esc(tgl),'',false,22,'center',{before:0,after:480})}
+${hline()}
+${secHead('I','Peserta Rapat')}
+${pesertaItems}
+${hline()}
+${secHead('II','Uraian Hasil Rapat')}
+${para('Rapat dilaksanakan pada '+esc(tgl)+' dengan agenda '+esc(judul.toLowerCase())+'. Rapat dihadiri oleh '+peserta.length+' peserta sebagaimana tercantum di atas.','',false,22,'',{before:0,after:120})}
+${para(esc(brsNarasi),'',false,22,'',{before:0,after:240})}
+${hline()}
+${secHead('III','Tindak Lanjut dan Kesimpulan')}
+${para('Berdasarkan hasil pembahasan, disepakati tindak lanjut dan kesimpulan sebagai berikut:','',false,22,'',{before:0,after:100})}
+${tindakItems}
+${hline()}
+${secHead('IV','Penutup')}
+${para('Demikian notulen rapat ini disusun sebagai catatan resmi dan bahan tindak lanjut bagi seluruh pihak yang terlibat. Semua peserta rapat diharapkan melaksanakan tindak lanjut sesuai dengan tanggung jawab dan tenggat waktu yang telah disepakati bersama.','',false,22,'',{before:0,after:480})}
+${hline()}
+<w:tbl>
+  <w:tblPr>
+    <w:tblStyle w:val="TableGrid"/>
+    <w:tblW w:w="9026" w:type="dxa"/>
+    <w:tblBorders>
+      <w:top w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+      <w:left w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+      <w:bottom w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+      <w:right w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+      <w:insideH w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+      <w:insideV w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+    </w:tblBorders>
+  </w:tblPr>
+  <w:tblGrid>
+    <w:gridCol w:w="4513"/>
+    <w:gridCol w:w="4513"/>
+  </w:tblGrid>
+  <w:tr>
+    <w:tc>
+      <w:tcPr><w:tcW w:w="4513" w:type="dxa"/><w:tcMar><w:top w:w="80" w:type="dxa"/><w:bottom w:w="80" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar></w:tcPr>
+      <w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t>Penyusun Notulen</w:t></w:r></w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr><w:tcW w:w="4513" w:type="dxa"/><w:tcMar><w:top w:w="80" w:type="dxa"/><w:bottom w:w="80" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar></w:tcPr>
+      <w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t>Pereviu</w:t></w:r></w:p>
+    </w:tc>
+  </w:tr>
+  <w:tr>
+    <w:tc>
+      <w:tcPr><w:tcW w:w="4513" w:type="dxa"/><w:tcMar><w:top w:w="80" w:type="dxa"/><w:bottom w:w="80" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar></w:tcPr>
+      <w:p><w:r><w:t></w:t></w:r></w:p>
+      <w:p><w:r><w:t></w:t></w:r></w:p>
+      <w:p><w:r><w:t></w:t></w:r></w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr><w:tcW w:w="4513" w:type="dxa"/><w:tcMar><w:top w:w="80" w:type="dxa"/><w:bottom w:w="80" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar></w:tcPr>
+      <w:p><w:r><w:t></w:t></w:r></w:p>
+      <w:p><w:r><w:t></w:t></w:r></w:p>
+      <w:p><w:r><w:t></w:t></w:r></w:p>
+    </w:tc>
+  </w:tr>
+  <w:tr>
+    <w:tc>
+      <w:tcPr><w:tcW w:w="4513" w:type="dxa"/><w:tcBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="111827"/></w:tcBdr><w:tcMar><w:top w:w="80" w:type="dxa"/><w:bottom w:w="80" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar></w:tcPr>
+      <w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr><w:t>${esc(penyusun)}</w:t></w:r></w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr><w:tcW w:w="4513" w:type="dxa"/><w:tcBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="111827"/></w:tcBdr><w:tcMar><w:top w:w="80" w:type="dxa"/><w:bottom w:w="80" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar></w:tcPr>
+      <w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr><w:t>${esc(pereviu)}</w:t></w:r></w:p>
+    </w:tc>
+  </w:tr>
+</w:tbl>
+</w:body>
+</w:document>`;
+
+  // Build minimal DOCX (ZIP) in-browser using base64
+  // We'll generate an RTF instead which opens in Word natively
+  const rtf=`{\\rtf1\\ansi\\deff0
+{\\fonttbl{\\f0\\froman\\fcharset0 Times New Roman;}{\\f1\\fswiss\\fcharset0 Arial;}}
+{\\colortbl;\\red15\\green118\\blue110;}
+\\paperw11906\\paperh16838\\margl1800\\margr1440\\margt1440\\margb1440
+\\f0\\fs24
+{\\pard\\qc\\b\\fs28 NOTULEN RAPAT\\par}
+{\\pard\\qc\\b\\fs26 ${rtfEsc(judul)}\\par}
+{\\pard\\qc\\fs22 Hari, Tanggal: ${rtfEsc(tgl)}\\par\\par}
+{\\pard\\brdrb\\brdrs\\brdrw10\\brdrcolor8a8a8a \\par}
+{\\pard\\f1\\b\\fs22\\cf1 I. PESERTA RAPAT\\par}
+${peserta.map(p=>`{\\pard\\fi-200\\li400\\f0\\fs22 \\bullet  ${rtfEsc(p)}\\par}`).join('')}
+{\\pard\\brdrb\\brdrs\\brdrw10\\brdrcolor8a8a8a \\par}
+{\\pard\\f1\\b\\fs22\\cf1 II. URAIAN HASIL RAPAT\\par}
+{\\pard\\fs22 Rapat dilaksanakan pada ${rtfEsc(tgl)} dengan agenda ${rtfEsc(judul.toLowerCase())}. Rapat dihadiri oleh ${peserta.length} peserta sebagaimana tercantum di atas.\\par}
+{\\pard\\fs22 ${rtfEsc(brsNarasi)}\\par\\par}
+{\\pard\\brdrb\\brdrs\\brdrw10\\brdrcolor8a8a8a \\par}
+{\\pard\\f1\\b\\fs22\\cf1 III. TINDAK LANJUT DAN KESIMPULAN\\par}
+{\\pard\\fs22 Berdasarkan hasil pembahasan, disepakati tindak lanjut dan kesimpulan sebagai berikut:\\par}
+${brsTindak.map((b,i)=>`{\\pard\\fi-300\\li500\\fs22 ${i+1}. ${rtfEsc(b)}\\par}`).join('')}
+{\\pard\\par}
+{\\pard\\brdrb\\brdrs\\brdrw10\\brdrcolor8a8a8a \\par}
+{\\pard\\f1\\b\\fs22\\cf1 IV. PENUTUP\\par}
+{\\pard\\fs22\\i Demikian notulen rapat ini disusun sebagai catatan resmi dan bahan tindak lanjut bagi seluruh pihak yang terlibat. Semua peserta rapat diharapkan melaksanakan tindak lanjut sesuai dengan tanggung jawab dan tenggat waktu yang telah disepakati bersama.\\par\\par}
+{\\pard\\brdrb\\brdrs\\brdrw10\\brdrcolor8a8a8a \\par}
+{\\pard\\par}
+{\\pard\\trowd\\trqc
+  \\cellx4700\\cellx9400
+  \\intbl\\qc Penyusun Notulen\\cell
+  \\intbl\\qc Pereviu\\cell
+\\row}
+{\\pard\\trowd\\trqc
+  \\cellx4700\\cellx9400
+  \\intbl\\par\\par\\par\\cell
+  \\intbl\\par\\par\\par\\cell
+\\row}
+{\\pard\\trowd\\trqc
+  \\clbrdrb\\brdrs\\brdrw10
+  \\cellx4700
+  \\clbrdrb\\brdrs\\brdrw10
+  \\cellx9400
+  \\intbl\\qc\\b ${rtfEsc(penyusun)}\\cell
+  \\intbl\\qc\\b ${rtfEsc(pereviu)}\\cell
+\\row}
+}`;
+
+  function rtfEsc(s){
+    let r='';
+    for(let i=0;i<s.length;i++){
+      const c=s.charCodeAt(i);
+      if(c>127)r+=`\\u${c}?`;
+      else if(c===92)r+='\\\\';
+      else if(c===123)r+='\\{';
+      else if(c===125)r+='\\}';
+      else r+=s[i];
+    }
+    return r;
+  }
+
+  const blob=new Blob([rtf],{type:'application/rtf'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const fn=judul.replace(/[^a-z0-9]/gi,'_').substring(0,40);
+  a.download=`Notulen_${fn}.rtf`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('File Word (.rtf) berhasil diunduh.');
+}
+
+/* ── INIT ─────────────────────────────────────────────────────── */
+loadDummy();
+</script>
+</body>
+</html>
